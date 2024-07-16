@@ -4,7 +4,7 @@
             <input
                 type="text"
                 v-model="gameInput"
-                placeholder="Entrez votre jeu"
+                placeholder="Enter your game"
             />
             <button
                 class="fa-solid fa-magnifying-glass"
@@ -22,14 +22,17 @@
                             class="platform-icon"
                         >
                             <i
+                                title="Xbox"
                                 v-if="platform === 'Xbox'"
                                 class="fab fa-xbox"
                             ></i>
                             <i
+                                title="PC"
                                 v-if="platform === 'PC'"
                                 class="fab fa-windows"
                             ></i>
                             <i
+                                title="Playstation"
                                 v-if="platform === 'PlayStation'"
                                 class="fab fa-playstation"
                             ></i>
@@ -37,8 +40,16 @@
                         <h2 class="title">{{ game.name }}</h2>
                     </div>
                     <div class="under-title">
-                        <div class="develeper-box"></div>
-                        <div class="rating-box">
+                        <div class="developer-box">
+                            <div>
+                                <h2>Developer</h2>
+                                <p v-for="developer in game.developers">
+                                    {{ developer.name }}
+                                </p>
+                            </div>
+                            <div>
+                                <h2>Genre</h2>
+                            </div>
                             <div>
                                 <h2>Rating</h2>
                                 <p>{{ game.rating }}/5</p>
@@ -60,6 +71,33 @@
                             class="description"
                             v-html="game.description"
                         ></div>
+                    </div>
+                    <div class="store-box">
+                        <h2>Where To Buy</h2>
+                        <div class="store-button">
+                            <div
+                                v-for="store in game.combinedStores"
+                                :key="store.id"
+                            >
+                                <a :href="store.url" target="_blank">
+                                    {{ store.name }}
+                                    <i
+                                        v-if="store.name === 'Xbox Store'"
+                                        class="fab fa-xbox"
+                                    ></i>
+                                    <i
+                                        v-if="store.name === 'Steam'"
+                                        class="fab fa-steam"
+                                    ></i>
+                                    <i
+                                        v-if="
+                                            store.name === 'PlayStation Store'
+                                        "
+                                        class="fab fa-playstation"
+                                    ></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="game-second"></div>
@@ -157,7 +195,7 @@
     width: 65%;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(10px);
-    padding: 10px;
+    padding: 20px;
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 16px;
 }
@@ -174,7 +212,6 @@
 }
 
 .title-box {
-    margin-left: 1em;
     text-align: left;
 }
 
@@ -224,10 +261,17 @@
     border-color: rgba(252, 75, 55, 0.4);
 }
 
-.rating-box {
+.under-title {
+    width: 100%;
     display: flex;
+    justify-content: center;
+}
+
+.developer-box {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
     gap: 30px;
-    justify-content: flex-end;
     padding: 20px;
 }
 
@@ -239,9 +283,47 @@
     margin-bottom: 5px;
 }
 
+.description {
+    height: 200px;
+    padding-right: 5px;
+    overflow: auto;
+}
+
 .description p {
-    font-size: 1rem;
+    font-size: 0.9rem;
     text-align: justify;
+}
+
+.store-box {
+    margin-top: 30px;
+    text-align: start;
+}
+
+.store-box h2 {
+    margin-bottom: 15px;
+}
+
+.store-button {
+    display: flex;
+    gap: 10px;
+}
+
+.store-button div a {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px;
+    text-decoration: none;
+    color: #fff;
+    background-color: hsla(0, 0%, 100%, 0.3);
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.store-button a:hover {
+    background-color: hsla(0, 0%, 100%, 0.1);
+    transform: scale(1.05);
 }
 </style>
 
@@ -254,6 +336,7 @@ export default {
             gameInput: "",
             game: null,
             platforms: [],
+            stores: [],
             noGame: false,
         };
     },
@@ -262,7 +345,7 @@ export default {
             return this.game && this.game.background_image
                 ? {
                       backgroundImage: `url(${this.game.background_image})`,
-                      height: "80vh",
+                      height: "90vh",
                       width: "80vw",
                   }
                 : {
@@ -300,6 +383,15 @@ export default {
     methods: {
         async searchGame() {
             try {
+                // Vérifiez si le jeu actuel est le même que l'utilisateur recherche
+                if (
+                    this.game &&
+                    this.game.name.toLowerCase() ===
+                        this.gameInput.toLowerCase()
+                ) {
+                    return;
+                }
+
                 const response = await axios.get(
                     "http://localhost:3000/api/games",
                     {
@@ -309,14 +401,37 @@ export default {
                         },
                     }
                 );
+
                 if (response.data) {
-                    console.log(response.data);
                     this.platforms = [];
                     this.noGame = false;
                     response.data.platforms.forEach((element) => {
                         this.platforms.push(element.platform.name);
                     });
-                    this.game = response.data;
+
+                    const stores = response.data.stores;
+                    const stores_link = response.data.stores_link;
+                    const combinedStores = stores_link.map((link) => {
+                        const storeInfo = stores.find(
+                            (store) => store.id === link.id
+                        );
+                        return {
+                            id: storeInfo.store.id,
+                            name: storeInfo.store.name,
+                            domain: storeInfo.store.domain,
+                            url: link.url,
+                            games_count: storeInfo.store.games_count,
+                            image_background: storeInfo.store.image_background,
+                            slug: storeInfo.store.slug,
+                        };
+                    });
+
+                    this.game = {
+                        ...response.data,
+                        combinedStores,
+                    };
+
+                    console.log(this.game);
                 } else {
                     this.game = null;
                     this.platforms = [];

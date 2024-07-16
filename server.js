@@ -43,8 +43,21 @@ app.get("/api/games", async (req, res) => {
             }
         );
 
-        // Répondre avec les détails du jeu
-        res.json(gameDetailsResponse.data);
+        const gameStoreResponse = await axios.get(
+            `https://api.rawg.io/api/games/${gameId}/stores`,
+            {
+                params: {
+                    key: apiKey,
+                },
+            }
+        );
+
+        const combinedData = {
+            ...gameDetailsResponse.data,
+            stores_link: gameStoreResponse.data.results,
+        };
+
+        res.json(combinedData);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error fetching data from RAWG API" });
