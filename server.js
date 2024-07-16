@@ -6,23 +6,45 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 
 app.get("/api/games", async (req, res) => {
-    const { search, page_size } = req.query;
+    const { search } = req.query;
     const apiKey = process.env.API_KEY;
 
     try {
-        const response = await axios.get("https://api.rawg.io/api/games", {
-            params: {
-                key: apiKey,
-                search,
-                page_size,
-            },
-        });
-        res.json(response.data);
+        // Première requête pour récupérer l'ID du jeu
+        const searchResponse = await axios.get(
+            "https://api.rawg.io/api/games",
+            {
+                params: {
+                    key: apiKey,
+                    search,
+                },
+            }
+        );
+
+        if (searchResponse.data.results.length === 0) {
+            return res.status(404).json({ message: "No games found" });
+        }
+
+        // Récupérer l'ID du premier jeu trouvé
+        const gameId = searchResponse.data.results[0].id;
+
+        // Deuxième requête pour récupérer les détails du jeu
+        const gameDetailsResponse = await axios.get(
+            `https://api.rawg.io/api/games/${gameId}`,
+            {
+                params: {
+                    key: apiKey,
+                },
+            }
+        );
+
+        // Répondre avec les détails du jeu
+        res.json(gameDetailsResponse.data);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error fetching data from RAWG API" });
