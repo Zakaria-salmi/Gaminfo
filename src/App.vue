@@ -11,34 +11,14 @@
         <div class="game-box">
             <div class="info-game">
                 <div class="game" v-if="game">
-                    <img :src="game.background_image" :alt="game.name" />
-                    <h2>{{ game.name }}</h2>
-                    <p>Release Date: {{ game.released }}</p>
-                    <p>Rating: {{ game.rating }}</p>
-                    <p>Metacritic Score: {{ game.metacritic }}</p>
-                    <p>
-                        Genres:
-                        <span
-                            v-for="(genre, index) in game.genres"
-                            :key="index"
-                        >
-                            {{ genre.name
-                            }}<span v-if="index < game.genres.length - 1"
-                                >,
-                            </span>
-                        </span>
-                    </p>
-                    <p>
-                        Platforms:
-                        <span
-                            v-for="(platform, index) in game.platforms"
-                            :key="index"
-                        >
-                            {{ platform.platform.name
-                            }}<span v-if="index < game.platforms.length - 1"
-                                >,
-                            </span>
-                        </span>
+                    <img src="" alt="" />
+                    <p class="name">Elden Ring</p>
+                    <p class="description">
+                        Lorem, ipsum dolor sit amet consectetur adipisicing
+                        elit. Nobis quasi repellendus maiores exercitationem
+                        odio tenetur! Laudantium sint architecto unde quasi
+                        soluta aliquam nam ipsa, eum eaque repellat nisi,
+                        voluptates quibusdam.
                     </p>
                 </div>
             </div>
