@@ -116,7 +116,7 @@
 
 <style>
 .container {
-    width: 50vw;
+    width: 80vw;
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(30px);
@@ -178,6 +178,7 @@
 .game-box {
     text-align: center;
     margin: 40px 0;
+    height: -webkit-fill-available;
 }
 
 .game-box img {
@@ -198,20 +199,24 @@
 
 .info-game {
     display: flex;
-    gap: 20px;
+    flex-wrap: wrap;
+    height: 95%;
 }
 
 .game-second {
-    width: 30%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 16px;
+    min-width: 30%;
 }
 
 .game-first {
     width: 65%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.game-first,
+.game-second {
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(10px);
     padding: 20px;
@@ -292,6 +297,7 @@
     justify-content: space-around;
     gap: 30px;
     padding: 20px;
+    flex-wrap: wrap;
 }
 
 .description-box {
@@ -327,6 +333,7 @@ ul {
 .store-button {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .store-button div a {
