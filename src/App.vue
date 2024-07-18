@@ -49,6 +49,9 @@
                             </div>
                             <div>
                                 <h2>Genre</h2>
+                                <p v-for="genre in game.genres">
+                                    {{ genre.name }}
+                                </p>
                             </div>
                             <div>
                                 <h2>Rating</h2>
@@ -76,7 +79,7 @@
                         <h2>Where To Buy</h2>
                         <div class="store-button">
                             <div
-                                v-for="store in game.combinedStores"
+                                v-for="store in filteredStores"
                                 :key="store.id"
                             >
                                 <a :href="store.url" target="_blank">
@@ -100,7 +103,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="game-second"></div>
+                <div class="game-second">
+                    <div></div>
+                </div>
             </div>
         </div>
         <div v-if="noGame" class="no-game">
@@ -189,6 +194,20 @@
 .game-box .description {
     font-size: 22px;
     font-weight: 500;
+}
+
+.info-game {
+    display: flex;
+    gap: 20px;
+}
+
+.game-second {
+    width: 30%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
 }
 
 .game-first {
@@ -289,7 +308,9 @@
     overflow: auto;
 }
 
-.description p {
+.description p,
+li,
+ul {
     font-size: 0.9rem;
     text-align: justify;
 }
@@ -379,8 +400,23 @@ export default {
             }
             return "";
         },
+        filteredStores() {
+            if (!this.game || !this.game.combinedStores) {
+                return [];
+            }
+            return this.game.combinedStores.filter((store) =>
+                this.validShop(store.name)
+            );
+        },
     },
     methods: {
+        validShop(store) {
+            return (
+                store == "Steam" ||
+                store == "PlayStation Store" ||
+                store == "Xbox Store"
+            );
+        },
         async searchGame() {
             try {
                 // Vérifiez si le jeu actuel est le même que l'utilisateur recherche
