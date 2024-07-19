@@ -15,7 +15,6 @@ app.get("/api/games", async (req, res) => {
     const apiKey = process.env.API_KEY;
 
     try {
-        // Première requête pour récupérer l'ID du jeu
         const searchResponse = await axios.get(
             "https://api.rawg.io/api/games",
             {
@@ -30,10 +29,8 @@ app.get("/api/games", async (req, res) => {
             return res.status(404).json({ message: "No games found" });
         }
 
-        // Récupérer l'ID du premier jeu trouvé
         const gameId = searchResponse.data.results[0].id;
 
-        // Deuxième requête pour récupérer les détails du jeu
         const gameDetailsResponse = await axios.get(
             `https://api.rawg.io/api/games/${gameId}`,
             {
@@ -52,9 +49,29 @@ app.get("/api/games", async (req, res) => {
             }
         );
 
+        const gameTrailerResponse = await axios.get(
+            `https://api.rawg.io/api/games/${gameId}/movies`,
+            {
+                params: {
+                    key: apiKey,
+                },
+            }
+        );
+
+        const gameScreensResponse = await axios.get(
+            `https://api.rawg.io/api/games/${gameId}/screenshots`,
+            {
+                params: {
+                    key: apiKey,
+                },
+            }
+        );
+
         const combinedData = {
             ...gameDetailsResponse.data,
             stores_link: gameStoreResponse.data.results,
+            trailers: gameTrailerResponse.data.results,
+            screenshots: gameScreensResponse.data.results,
         };
 
         res.json(combinedData);
@@ -64,7 +81,6 @@ app.get("/api/games", async (req, res) => {
     }
 });
 
-// Démarrer le serveur
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });

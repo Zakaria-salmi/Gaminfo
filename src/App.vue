@@ -1,10 +1,18 @@
 <template>
+    <vue-easy-lightbox
+        class="lightbox-overlay"
+        :visible="lightboxVisible"
+        :imgs="game?.screenshots?.map((screenshot) => screenshot.image) || []"
+        :index="lightboxIndex"
+        @hide="lightboxVisible = false"
+    />
     <div class="container" :style="backgroundStyle">
         <div class="search-box">
             <input
                 type="text"
                 v-model="gameInput"
                 placeholder="Enter your game"
+                @keyup.enter="searchGame"
             />
             <button
                 class="fa-solid fa-magnifying-glass"
@@ -104,7 +112,29 @@
                     </div>
                 </div>
                 <div class="game-second">
-                    <div></div>
+                    <div class="media-box">
+                        <div
+                            class="trailer"
+                            v-if="game.trailers && game.trailers.length"
+                        >
+                            <video
+                                :src="game.trailers[0].data.max"
+                                controls
+                            ></video>
+                        </div>
+                        <div class="screenshots">
+                            <img
+                                v-for="(
+                                    screenshot, index
+                                ) in game.screenshots.slice(0, 4)"
+                                :key="index"
+                                v-lazy="screenshot.image"
+                                alt="Screenshot"
+                                class="screenshot"
+                                @click="showLightbox(index)"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -114,251 +144,16 @@
     </div>
 </template>
 
-<style>
-.container {
-    width: 80vw;
-    margin: 0 auto;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(30px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 16px;
-    padding: 20px;
-    background-position: center;
-    background-size: cover;
-}
-
-.search-box {
-    position: relative;
-    width: 100%;
-    height: 55px;
-    display: flex;
-    align-items: center;
-}
-
-.search-box input {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    outline: none;
-    border-radius: 10px;
-    font-size: 22px;
-    color: white;
-    font-weight: 500;
-    text-transform: uppercase;
-    padding: 0 48px 0 42px;
-}
-
-.search-box input::placeholder {
-    color: white;
-    text-transform: capitalize;
-}
-
-.search-box button {
-    position: absolute;
-    right: 0;
-    width: 40px;
-    height: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    font-size: 28px;
-    color: white;
-    padding: 0 40px 0 5px;
-    cursor: pointer;
-}
-
-.search-box i {
-    position: relative;
-    left: 10px;
-    font-size: 28px;
-}
-
-.game-box {
-    text-align: center;
-    margin: 40px 0;
-    height: -webkit-fill-available;
-}
-
-.game-box img {
-    width: 60%;
-}
-
-.game-box .name {
-    position: relative;
-    font-size: 64px;
-    line-height: 1;
-    font-weight: 700;
-}
-
-.game-box .description {
-    font-size: 22px;
-    font-weight: 500;
-}
-
-.info-game {
-    display: flex;
-    flex-wrap: wrap;
-    height: 95%;
-}
-
-.game-second {
-    min-width: 30%;
-}
-
-.game-first {
-    width: 65%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-between;
-}
-
-.game-first,
-.game-second {
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 16px;
-}
-
-.game-second {
-    width: 35%;
-}
-
-.no-game {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 15px;
-}
-
-.title-box {
-    text-align: left;
-}
-
-.title {
-    font-size: 3em;
-}
-
-.date-tag {
-    font-size: 12px;
-    line-height: normal;
-    font-weight: 600;
-    padding: 2px 7.5px;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    color: #000;
-    border-radius: 4px;
-    background-color: #fff;
-}
-
-.platform-icon {
-    margin-left: 7px;
-}
-
-.metascore {
-    display: inline-block;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    padding: 2px;
-    font-weight: 700;
-    text-align: center;
-    border-radius: 4px;
-    border: 1px solid;
-}
-
-.metascore-green {
-    color: #6dc849;
-    border-color: rgba(109, 200, 73, 0.4);
-}
-
-.metascore-orange {
-    color: #fdca52;
-    border-color: rgba(253, 202, 82, 0.4);
-}
-
-.metascore-red {
-    color: #fc4b37;
-    border-color: rgba(252, 75, 55, 0.4);
-}
-
-.under-title {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.developer-box {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    gap: 30px;
-    padding: 20px;
-    flex-wrap: wrap;
-}
-
-.description-box {
-    text-align: left;
-}
-
-.description-box h2 {
-    margin-bottom: 5px;
-}
-
-.description {
-    height: 200px;
-    padding-right: 5px;
-    overflow: auto;
-}
-
-.description p,
-li,
-ul {
-    font-size: 0.9rem;
-    text-align: justify;
-}
-
-.store-box {
-    margin-top: 30px;
-    text-align: start;
-}
-
-.store-box h2 {
-    margin-bottom: 15px;
-}
-
-.store-button {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.store-button div a {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 10px;
-    text-decoration: none;
-    color: #fff;
-    background-color: hsla(0, 0%, 100%, 0.3);
-    border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.store-button a:hover {
-    background-color: hsla(0, 0%, 100%, 0.1);
-    transform: scale(1.05);
-}
-</style>
+<style></style>
 
 <script>
 import axios from "axios";
+import VueEasyLightbox from "vue-easy-lightbox";
 
 export default {
+    components: {
+        VueEasyLightbox,
+    },
     data() {
         return {
             gameInput: "",
@@ -366,6 +161,8 @@ export default {
             platforms: [],
             stores: [],
             noGame: false,
+            lightboxVisible: false,
+            lightboxIndex: 0,
         };
     },
     computed: {
@@ -426,7 +223,6 @@ export default {
         },
         async searchGame() {
             try {
-                // Vérifiez si le jeu actuel est le même que l'utilisateur recherche
                 if (
                     this.game &&
                     this.game.name.toLowerCase() ===
@@ -486,6 +282,10 @@ export default {
                 this.platforms = [];
                 this.noGame = true;
             }
+        },
+        showLightbox(index) {
+            this.lightboxIndex = index;
+            this.lightboxVisible = true;
         },
     },
 };
