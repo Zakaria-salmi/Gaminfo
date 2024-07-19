@@ -19,128 +19,139 @@
                 @click="searchGame"
             ></button>
         </div>
-        <div v-if="game" class="game-box">
-            <div class="info-game">
-                <div class="game-first">
-                    <div class="title-box">
-                        <span class="date-tag">{{ game.released }}</span>
-                        <span
-                            v-for="(platform, index) in uniquePlatformFamilies"
-                            :key="index"
-                            class="platform-icon"
-                        >
-                            <i
-                                title="Xbox"
-                                v-if="platform === 'Xbox'"
-                                class="fab fa-xbox"
-                            ></i>
-                            <i
-                                title="PC"
-                                v-if="platform === 'PC'"
-                                class="fab fa-windows"
-                            ></i>
-                            <i
-                                title="Playstation"
-                                v-if="platform === 'PlayStation'"
-                                class="fab fa-playstation"
-                            ></i>
-                        </span>
-                        <h2 class="title">{{ game.name }}</h2>
-                    </div>
-                    <div class="under-title">
-                        <div class="developer-box">
-                            <div>
-                                <h2>Developer</h2>
-                                <p v-for="developer in game.developers">
-                                    {{ developer.name }}
-                                </p>
-                            </div>
-                            <div>
-                                <h2>Genre</h2>
-                                <p v-for="genre in game.genres">
-                                    {{ genre.name }}
-                                </p>
-                            </div>
-                            <div>
-                                <h2>Rating</h2>
-                                <p>{{ game.rating }}/5</p>
-                            </div>
-                            <div>
-                                <h2>Metascore</h2>
-                                <p
-                                    v-if="game.metacritic"
-                                    :class="[metascoreClass, 'metascore']"
-                                >
-                                    {{ game.metacritic }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="description-box">
-                        <h2>Description</h2>
-                        <div
-                            class="description"
-                            v-html="game.description"
-                        ></div>
-                    </div>
-                    <div class="store-box">
-                        <h2>Where To Buy</h2>
-                        <div class="store-button">
-                            <div
-                                v-for="store in filteredStores"
-                                :key="store.id"
-                            >
-                                <a :href="store.url" target="_blank">
-                                    {{ store.name }}
-                                    <i
-                                        v-if="store.name === 'Xbox Store'"
-                                        class="fab fa-xbox"
-                                    ></i>
-                                    <i
-                                        v-if="store.name === 'Steam'"
-                                        class="fab fa-steam"
-                                    ></i>
-                                    <i
-                                        v-if="
-                                            store.name === 'PlayStation Store'
-                                        "
-                                        class="fab fa-playstation"
-                                    ></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="game-second">
-                    <div class="media-box">
-                        <div
-                            class="trailer"
-                            v-if="game.trailers && game.trailers.length"
-                        >
-                            <video
-                                :src="game.trailers[0].data.max"
-                                controls
-                            ></video>
-                        </div>
-                        <div class="screenshots">
-                            <img
+        <transition name="fade">
+            <div v-if="game" class="game-box">
+                <div class="info-game">
+                    <div class="game-first">
+                        <div class="title-box">
+                            <span class="date-tag">{{ game.released }}</span>
+                            <span
                                 v-for="(
-                                    screenshot, index
-                                ) in game.screenshots.slice(0, 4)"
+                                    platform, index
+                                ) in uniquePlatformFamilies"
                                 :key="index"
-                                v-lazy="screenshot.image"
-                                alt="Screenshot"
-                                class="screenshot"
-                                @click="showLightbox(index)"
-                            />
+                                class="platform-icon"
+                            >
+                                <i
+                                    title="Xbox"
+                                    v-if="platform === 'Xbox'"
+                                    class="fab fa-xbox"
+                                ></i>
+                                <i
+                                    title="PC"
+                                    v-if="platform === 'PC'"
+                                    class="fab fa-windows"
+                                ></i>
+                                <i
+                                    title="Playstation"
+                                    v-if="platform === 'PlayStation'"
+                                    class="fab fa-playstation"
+                                ></i>
+                            </span>
+                            <h2 class="title">{{ game.name }}</h2>
+                        </div>
+                        <div class="under-title">
+                            <div class="developer-box">
+                                <div>
+                                    <h2>Developer</h2>
+                                    <p v-for="developer in game.developers">
+                                        {{ developer.name }}
+                                    </p>
+                                </div>
+                                <div>
+                                    <h2>Genre</h2>
+                                    <p v-for="genre in game.genres">
+                                        {{ genre.name }}
+                                    </p>
+                                </div>
+                                <div>
+                                    <h2>Rating</h2>
+                                    <p>{{ game.rating }}/5</p>
+                                </div>
+                                <div>
+                                    <h2>Metascore</h2>
+                                    <p
+                                        v-if="game.metacritic"
+                                        :class="[metascoreClass, 'metascore']"
+                                    >
+                                        {{ game.metacritic }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="description-box">
+                            <h2>Description</h2>
+                            <div
+                                class="description"
+                                v-html="game.description"
+                            ></div>
+                        </div>
+                        <div class="store-box">
+                            <h2>Where To Buy</h2>
+                            <div class="store-button">
+                                <div
+                                    v-for="store in filteredStores"
+                                    :key="store.id"
+                                >
+                                    <a :href="store.url" target="_blank">
+                                        {{ store.name }}
+                                        <i
+                                            v-if="store.name === 'Xbox Store'"
+                                            class="fab fa-xbox"
+                                        ></i>
+                                        <i
+                                            v-if="store.name === 'Steam'"
+                                            class="fab fa-steam"
+                                        ></i>
+                                        <i
+                                            v-if="
+                                                store.name ===
+                                                'PlayStation Store'
+                                            "
+                                            class="fab fa-playstation"
+                                        ></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="game-second">
+                        <div class="media-box">
+                            <div
+                                class="trailer"
+                                v-if="game.trailers && game.trailers.length"
+                            >
+                                <video
+                                    :src="game.trailers[0].data.max"
+                                    controls
+                                ></video>
+                            </div>
+                            <transition name="fade">
+                                <div
+                                    class="screenshots"
+                                    v-show="game.screenshots.length"
+                                >
+                                    <img
+                                        v-for="(
+                                            screenshot, index
+                                        ) in game.screenshots.slice(0, 4)"
+                                        :key="index"
+                                        v-lazy="screenshot.image"
+                                        alt="Screenshot"
+                                        class="screenshot"
+                                        @click="showLightbox(index)"
+                                    />
+                                </div>
+                            </transition>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </transition>
         <div v-if="noGame" class="no-game">
             <p>No game found. Please try a different search.</p>
         </div>
+        <div v-if="isLoading" class="loading-spinner"></div>
     </div>
 </template>
 
@@ -163,6 +174,7 @@ export default {
             noGame: false,
             lightboxVisible: false,
             lightboxIndex: 0,
+            isLoading: false,
         };
     },
     computed: {
@@ -222,6 +234,7 @@ export default {
             );
         },
         async searchGame() {
+            this.isLoading = true;
             try {
                 if (
                     this.game &&
@@ -270,6 +283,16 @@ export default {
                         combinedStores,
                     };
 
+                    this.$nextTick(() => {
+                        // Adding visible class to trigger animations
+                        document
+                            .querySelector(".game-box")
+                            ?.classList.add("visible");
+                        document
+                            .querySelector(".screenshots")
+                            ?.classList.add("visible");
+                    });
+
                     console.log(this.game);
                 } else {
                     this.game = null;
@@ -281,6 +304,8 @@ export default {
                 this.game = null;
                 this.platforms = [];
                 this.noGame = true;
+            } finally {
+                this.isLoading = false;
             }
         },
         showLightbox(index) {
