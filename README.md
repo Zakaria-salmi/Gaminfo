@@ -2,6 +2,8 @@
 
 Game Info Viewer est une application web qui permet aux utilisateurs de rechercher des jeux vidéo et de consulter des informations détaillées à leur sujet, y compris des bandes-annonces, des captures d'écran, des informations sur les développeurs, les genres, les évaluations et où les acheter.
 
+<img width="100%" src="./src/assets/demo.gif">
+
 ## Fonctionnalités
 
 -   Rechercher des jeux vidéo par nom
@@ -57,6 +59,12 @@ Pour configurer ce projet localement, suivez ces étapes :
     ```
 
     L'application devrait maintenant fonctionner sur `http://localhost:3000`.
+
+5. **Lancer le serveur API :**
+
+    ```bash
+    node server.js
+    ```
 
 ## Utilisation
 
