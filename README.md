@@ -31,7 +31,7 @@ Pour configurer ce projet localement, suivez ces étapes :
 1. **Cloner le dépôt :**
 
     ```bash
-    git clone https://github.com/your-username/game-info-viewer.git
+    git clone https://github.com/Zakaria-salmi/Gaminfo.git
     cd game-info-viewer
     ```
 
@@ -53,7 +53,7 @@ Pour configurer ce projet localement, suivez ces étapes :
 4. **Lancer le serveur de développement :**
 
     ```bash
-    npm run serve
+    npm run dev
     ```
 
     L'application devrait maintenant fonctionner sur `http://localhost:3000`.
