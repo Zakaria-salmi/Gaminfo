@@ -249,7 +249,7 @@ export default {
                 }
 
                 const response = await axios.get(
-                    "http://localhost:3000/api/games",
+                    "https://gaminfo-app.netlify.app/api/games",
                     {
                         params: {
                             search: this.gameInput,
