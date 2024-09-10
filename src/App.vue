@@ -1,4 +1,5 @@
 <template>
+    <div v-if="isLoading" class="loading-spinner loading-center"></div>
     <vue-easy-lightbox
         class="lightbox-overlay"
         :visible="lightboxVisible"
@@ -151,11 +152,14 @@
         <div v-if="noGame" class="no-game">
             <p>No game found. Please try a different search.</p>
         </div>
-        <div v-if="isLoading" class="loading-spinner"></div>
     </div>
 </template>
 
-<style></style>
+<style>
+.loading-center {
+    z-index: 10000;
+}
+</style>
 
 <script>
 import axios from "axios";
