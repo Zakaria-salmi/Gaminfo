@@ -248,15 +248,12 @@ export default {
                     return;
                 }
 
-                const response = await axios.get(
-                    "https://gaminfo-app.netlify.app/api/games",
-                    {
-                        params: {
-                            search: this.gameInput,
-                            page_size: 1,
-                        },
-                    }
-                );
+                const response = await axios.get("/.netlify/functions/games", {
+                    params: {
+                        search: this.gameInput,
+                        page_size: 1,
+                    },
+                });
 
                 if (response.data) {
                     this.platforms = [];
@@ -296,8 +293,6 @@ export default {
                             .querySelector(".screenshots")
                             ?.classList.add("visible");
                     });
-
-                    console.log(this.game);
                 } else {
                     this.game = null;
                     this.platforms = [];
