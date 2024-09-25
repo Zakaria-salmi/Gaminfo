@@ -186,8 +186,8 @@ export default {
             return this.game && this.game.background_image
                 ? {
                       backgroundImage: `url(${this.game.background_image})`,
-                      height: "90vh",
-                      width: "80vw",
+                      height: "100%",
+                      width: "100%",
                   }
                 : {
                       width: "50vw",
